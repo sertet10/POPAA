@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17365d">
+<meta name="description" content="Демонстрационный интерфейс информирования населения.">
+<title>Оповещение населения</title>
+<style>
+:root{--blue:#17365d;--blue2:#214c7c;--red:#d52f36;--ink:#1d2b3a;--muted:#718093;--bg:#eef2f6;--line:#e1e7ed;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;padding-bottom:94px}
+.demo{background:#fff0d8;color:#805315;text-align:center;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.04em}
+.app-header{background:var(--blue);color:#fff;padding:18px max(calc((100% - 980px)/2),18px) 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}.brand-icon{width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--red);font-weight:900;font-size:14px;letter-spacing:-1px}.brand-name{font-size:17px;font-weight:700}.brand-sub{font-size:10px;color:#c5d5e5;margin-top:4px}.header-status{font-size:10px;color:#d8e3ee;text-align:right}.header-status b{display:block;color:#a9dfbd;font-size:11px;margin-bottom:4px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 18px}
+.welcome{background:linear-gradient(120deg,#214c7c,#17365d);color:#fff;border-radius:17px;padding:22px;margin-bottom:20px;box-shadow:0 7px 20px #17365d1c}
+.welcome-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.welcome-label{font-size:10px;color:#c7d8e8;letter-spacing:.1em;font-weight:700}.demo-pill{background:#ffffff1b;border:1px solid #ffffff30;border-radius:20px;padding:6px 9px;font-size:9px;white-space:nowrap}.welcome h1{font-size:25px;line-height:1.18;margin:17px 0 8px}.welcome p{font-size:12px;line-height:1.6;color:#d4e0eb;margin:0;max-width:590px}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:24px 2px 12px}.section-title h2{font-size:18px;margin:0;color:#25384d}.section-title span{font-size:10px;color:var(--muted)}
+.notice{display:flex;gap:13px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px;margin-bottom:11px;box-shadow:0 2px 7px #1c35500a}
+.notice-symbol{width:39px;height:39px;flex:none;border-radius:11px;display:grid;place-items:center;font-size:19px;font-weight:800}.notice.info .notice-symbol{background:#e7f1fb;color:#3177b7}.notice.warn .notice-symbol{background:#fff2d9;color:#b87a12}.notice.tip .notice-symbol{background:#e6f4ec;color:#268253}
+.notice-main{min-width:0;flex:1}.notice-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:9px;color:#8190a0;font-weight:700;letter-spacing:.04em}.notice h3{font-size:14px;margin:7px 0 5px}.notice p{font-size:11px;color:#657588;line-height:1.55;margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.notice-type{display:inline-block;padding:4px 7px;border-radius:5px;background:#f0f3f6;color:#647487;font-size:9px;font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.tile{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;min-height:110px}.tile-icon{font-size:22px}.tile h3{font-size:13px;margin:9px 0 5px}.tile p{font-size:10px;line-height:1.5;color:var(--muted);margin:0}
+.info-box{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;margin-top:18px}.info-box h3{font-size:14px;margin:0 0 8px}.info-box p{font-size:11px;color:var(--muted);line-height:1.6;margin:0}
+.bottom-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;box-shadow:0 -5px 18px #1b35500d;padding:8px max(calc((100% - 650px)/2),10px) calc(8px + env(safe-area-inset-bottom))}
+.nav-btn{border:0;background:transparent;color:#718093;display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:700;padding:5px 2px;cursor:pointer}.nav-btn .nav-icon{font-size:19px;line-height:1}.nav-btn.active{color:var(--blue)}.nav-btn.admin{color:var(--red)}.nav-btn.admin .nav-icon{width:34px;height:34px;border-radius:11px;background:#fff0f0;display:grid;place-items:center}
+footer{text-align:center;color:#8a97a5;font-size:9px;padding:15px 20px 22px;line-height:1.6}
+.modal-backdrop{position:fixed;inset:0;background:#0d1d2dcc;z-index:30;display:none;align-items:flex-end;justify-content:center;padding:14px}.modal-backdrop.open{display:flex}.modal{width:min(100%,560px);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 15px 55px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font-size:19px;margin:0}.close{border:0;background:#eef2f6;border-radius:9px;width:34px;height:34px;font-size:20px;cursor:pointer;color:#44566a}
+.demo-warning{background:#fff2d9;color:#805315;border-radius:9px;padding:11px;font-size:10px;line-height:1.5;margin-bottom:15px}
+label{display:block;font-size:11px;font-weight:700;color:#40536a;margin:13px 0 6px}input,textarea,select{width:100%;border:1px solid #d8e0e8;border-radius:9px;padding:11px 12px;font:13px Arial;color:var(--ink);background:#fff}textarea{min-height:92px;resize:vertical}.form-actions{display:flex;gap:9px;margin-top:17px}.btn{border:0;border-radius:9px;padding:12px 15px;font-size:12px;font-weight:700;cursor:pointer}.btn-primary{background:var(--blue);color:#fff;flex:1}.btn-secondary{background:#eef2f6;color:#44566a}.admin-list{margin-top:19px;border-top:1px solid var(--line);padding-top:14px}.admin-list h3{font-size:13px;margin:0 0 10px}.admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f3;font-size:11px}.delete-btn{border:0;background:#fff0f0;color:#bd3037;border-radius:7px;padding:7px 9px;font-size:10px;cursor:pointer}
+@media(min-width:700px){.wrap{padding-top:28px}.welcome{padding:30px}.welcome h1{font-size:30px}.tiles{grid-template-columns:repeat(4,1fr)}.modal-backdrop{align-items:center}.notice{padding:17px}}
+</style>
+</head>
+<body>
+<div class="demo">УЧЕБНЫЙ МАКЕТ · НЕ ОФИЦИАЛЬНЫЙ СЕРВИС МЧС РОССИИ · НЕ ПЕРЕДАЁТ РЕАЛЬНЫЕ ТРЕВОГИ</div>
+<header class="app-header">
+  <div class="brand"><div class="brand-icon">ОП</div><div><div class="brand-name">Оповещение населения</div><div class="brand-sub">Информационный портал</div></div></div>
+  <div class="header-status"><b>● ДЕМО-РЕЖИМ</b>Информационная лента</div>
+</header>
+
+<main class="wrap">
+  <section class="welcome">
+    <div class="welcome-top"><div class="welcome-label">ЕДИНАЯ ИНФОРМАЦИОННАЯ ЛЕНТА</div><div class="demo-pill">Учебный проект</div></div>
+    <h1>Важная информация<br>для вашей безопасности</h1>
+    <p>Читайте информационные сообщения и рекомендации. При реальной угрозе руководствуйтесь только подтверждёнными сообщениями официальных служб.</p>
+  </section>
+
+  <div class="section-title"><h2 id="feedTitle">Последние сообщения</h2><span id="messageCount">3 сообщения</span></div>
+  <section id="alertList" aria-live="polite">
+    <article class="notice info"><div class="notice-symbol">i</div><div class="notice-main"><div class="notice-meta">ИНФОРМАЦИЯ <span>·</span> ПРИМЕР</div><h3>Проверка системы оповещения</h3><p>Учебный пример информационного сообщения. Это не уведомление о реальной проверке.</p></div></article>
+    <article class="notice warn"><div class="notice-symbol">!</div><div class="notice-main"><div class="notice-meta">ПАМЯТКА <span>·</span> ПРИМЕР</div><h3>Подготовка к неблагоприятной погоде</h3><p>Следите за прогнозом погоды и рекомендациями местных официальных служб.</p></div></article>
+    <article class="notice tip"><div class="notice-symbol">✓</div><div class="notice-main"><div class="notice-meta">ПОЛЕЗНЫЙ СОВЕТ <span>·</span> ПРИМЕР</div><h3>Сохраните важные контакты</h3><p>Заранее узнайте действующие номера экстренных служб и адреса пунктов помощи в вашем регионе.</p></div></article>
+  </section>
+
+  <div class="section-title"><h2>Полезные разделы</h2></div>
+  <section class="tiles">
+    <article class="tile"><div class="tile-icon">📢</div><h3>Оповещения</h3><p>Информационные сообщения и учебные примеры.</p></article>
+    <article class="tile"><div class="tile-icon">🧭</div><h3>Зоны информирования</h3><p>В этой версии реальные зоны и геоданные не отображаются.</p></article>
+    <article class="tile"><div class="tile-icon">📋</div><h3>Памятки</h3><p>Проверяйте рекомендации на официальных ресурсах.</p></article>
+    <article class="tile"><div class="tile-icon">☎</div><h3>Экстренная помощь</h3><p>Используйте местный официальный номер экстренной помощи.</p></article>
+  </section>
+  <section class="info-box"><h3>Важно знать</h3><p>Этот сайт — независимый демонстрационный проект в стилистике информационных приложений экстренных служб. Он не связан с МЧС России, не получает сведения от государственных систем, не определяет опасные зоны и не рассылает уведомления населению. Проверяйте важную информацию по официальным каналам.</p></section>
+</main>
+
+<footer>Демонстрационный проект · Все сообщения на этой странице являются учебными примерами.</footer>
+
+<nav class="bottom-nav" aria-label="Нижнее меню">
+  <button class="nav-btn active" type="button" data-scroll="top"><span class="nav-icon">⌂</span>Главная</button>
+  <button class="nav-btn" type="button" data-scroll="alertList"><span class="nav-icon">▤</span>Сообщения</button>
+  <button class="nav-btn" type="button" id="adminOpen"><span class="nav-icon">⚙</span>Админ-панель</button>
+</nav>
+
+<div class="modal-backdrop" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="adminTitle">Панель администратора</h2><button class="close" id="adminClose" aria-label="Закрыть">×</button></div>
+    <div class="demo-warning"><b>Демо-администрирование.</b> Сообщения сохраняются только в этом браузере на этом устройстве. Они не публикуются для других посетителей и не являются реальными экстренными оповещениями.</div>
+    <form id="noticeForm">
+      <label for="scenario">Готовый учебный сценарий</label>
+      <select id="scenario">
+        <option value="">Выберите шаблон…</option>
+        <option value="rocket_start">Ракетная опасность — начало учебного сценария</option>
+        <option value="rocket_end">Ракетная опасность — окончание учебного сценария</option>
+        <option value="uav_start">БПЛА — начало учебного сценария</option>
+        <option value="uav_end">БПЛА — окончание учебного сценария</option>
+      </select>
+      <label for="region">Регион по умолчанию</label>
+      <select id="region">
+        <option value="Учебный район Северный">Учебный район Северный</option>
+        <option value="Учебный район Центральный">Учебный район Центральный</option>
+        <option value="Учебный район Южный">Учебный район Южный</option>
+        <option value="Учебный район Восточный">Учебный район Восточный</option>
+      </select>
+      <p style="font-size:10px;line-height:1.5;color:#718093;margin:7px 0 0">Выберите регион один раз — сайт запомнит его в этом браузере и будет подставлять автоматически.</p>
+      <button class="btn btn-secondary" type="button" id="useTemplate" style="width:100%;margin-top:10px">Заполнить готовый текст</button>
+      <label for="noticeType">Тип сообщения</label>
+      <select id="noticeType"><option value="info">Информация</option><option value="warn">Памятка</option><option value="tip">Полезный совет</option></select>
+      <label for="noticeTitle">Заголовок</label>
+      <input id="noticeTitle" maxlength="90" required placeholder="Например: Учебное информационное сообщение">
+      <label for="noticeText">Текст сообщения</label>
+      <textarea id="noticeText" maxlength="600" required placeholder="Введите текст учебного сообщения"></textarea>
+      <p style="font-size:10px;line-height:1.5;color:#718093;margin:8px 0 0">Публикация доступна только в локальной демонстрационной ленте этого браузера. Отправки SMS, push-уведомлений или сообщений реальным жителям нет.</p>
+      <div class="form-actions"><button class="btn btn-primary" type="submit">Добавить сообщение</button><button class="btn btn-secondary" type="button" id="cancelAdmin">Закрыть</button></div>
+    </form>
+    <div class="admin-list"><h3>Добавленные сообщения на этом устройстве</h3><div id="adminItems"><p style="font-size:11px;color:#718093">Пока нет добавленных сообщений.</p></div></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const storageKey = 'opoveshchenie_demo_messages_v1';
+  const regionStorageKey = 'opoveshchenie_demo_default_region_v1';
+  const list = document.getElementById('alertList');
+  const regionSelect = document.getElementById('region');
+  try {
+    const savedRegion = localStorage.getItem(regionStorageKey);
+    if (savedRegion && Array.from(regionSelect.options).some(option => option.value === savedRegion)) {
+      regionSelect.value = savedRegion;
+    }
+  } catch(e) {}
+  regionSelect.addEventListener('change', () => {
+    try { localStorage.setItem(regionStorageKey, regionSelect.value); } catch(e) {}
+  });
+  const modal = document.getElementById('adminModal');
+  const form = document.getElementById('noticeForm');
+  const adminItems = document.getElementById('adminItems');
+  const icons = {info:'i', warn:'!', tip:'✓'};
+  const labels = {info:'ИНФОРМАЦИЯ · УЧЕБНЫЙ ПРИМЕР', warn:'ПАМЯТКА · УЧЕБНЫЙ ПРИМЕР', tip:'ПОЛЕЗНЫЙ СОВЕТ · УЧЕБНЫЙ ПРИМЕР'};
+  let messages = [];
+  try { messages = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch(e) { messages = []; }
+
+  function safeText(value) { return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function save() { try { localStorage.setItem(storageKey, JSON.stringify(messages)); } catch(e) {} }
+  function render() {
+    list.querySelectorAll('[data-user-message]').forEach(el => el.remove());
+    messages.forEach((m, index) => {
+      const article = document.createElement('article');
+      article.className = 'notice ' + (m.type in icons ? m.type : 'info');
+      article.dataset.userMessage = 'true';
+      article.innerHTML = `<div class="notice-symbol">${icons[m.type] || 'i'}</div><div class="notice-main"><div class="notice-meta">${labels[m.type] || labels.info}<span>·</span>${safeText(m.date)}</div><h3>${safeText(m.title)}</h3><p>${safeText(m.text)}</p></div>`;
+      list.prepend(article);
+    });
+    document.getElementById('messageCount').textContent = (3 + messages.length) + ' сообщения';
+    renderAdminList();
+  }
+  function renderAdminList() {
+    if (!messages.length) { adminItems.innerHTML = '<p style="font-size:11px;color:#718093">Пока нет добавленных сообщений.</p>'; return; }
+    adminItems.innerHTML = messages.map((m,i) => `<div class="admin-row"><span>${safeText(m.title)}</span><button class="delete-btn" type="button" data-delete="${i}">Удалить</button></div>`).join('');
+    adminItems.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => {
+      messages.splice(Number(btn.dataset.delete), 1); save(); render();
+    }));
+  }
+  function closeModal() { modal.classList.remove('open'); }
+  document.getElementById('adminOpen').addEventListener('click', () => { modal.classList.add('open'); renderAdminList(); });
+  document.getElementById('adminClose').addEventListener('click', closeModal);
+  document.getElementById('cancelAdmin').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  const templates = {
+    rocket_start: {
+      type: 'warn',
+      title: 'Учебный сценарий: ракетная опасность',
+      text: 'В рамках демонстрационного сценария объявлено условное оповещение «Ракетная опасность» для указанного учебного района. Сценарий не относится к реальной обстановке.'
+    },
+    rocket_end: {
+      type: 'tip',
+      title: 'Учебный сценарий: отбой ракетной опасности',
+      text: 'В рамках демонстрационного сценария условное оповещение «Ракетная опасность» завершено. Это демонстрационный сценарий, не описывающий реальную обстановку.'
+    },
+    uav_start: {
+      type: 'warn',
+      title: 'Учебный сценарий: условная опасность БПЛА',
+      text: 'В рамках демонстрационного сценария объявлено условное оповещение по теме «БПЛА» для указанного учебного района. Сценарий не относится к реальной обстановке.'
+    },
+    uav_end: {
+      type: 'tip',
+      title: 'Учебный сценарий: отбой оповещения по БПЛА',
+      text: 'В рамках демонстрационного сценария условное оповещение по теме «БПЛА» завершено. Это демонстрационный сценарий, не описывающий реальную обстановку.'
+    }
+  };
+  document.getElementById('useTemplate').addEventListener('click', () => {
+    const key = document.getElementById('scenario').value;
+    if (!key || !templates[key]) {
+      alert('Сначала выберите учебный сценарий.');
+      return;
+    }
+    const template = templates[key];
+    const region = document.getElementById('region').value;
+    document.getElementById('noticeType').value = template.type;
+    document.getElementById('noticeTitle').value = template.title + ' — ' + region;
+    document.getElementById('noticeText').value = template.text + ' Учебная зона: ' + region + '.';
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('noticeTitle').value.trim();
+    const text = document.getElementById('noticeText').value.trim();
+    const type = document.getElementById('noticeType').value;
+    if (!title || !text) return;
+    messages.unshift({title, text, type, date: new Date().toLocaleString('ru-RU', {dateStyle:'short', timeStyle:'short'}), region: document.getElementById('region').value});
+    save(); form.reset(); render();
+  });
+  document.querySelectorAll('[data-scroll]').forEach(btn => btn.addEventListener('click', () => {
+    const target = btn.dataset.scroll === 'top' ? document.body : document.getElementById(btn.dataset.scroll);
+    target.scrollIntoView({behavior:'smooth'});
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }));
+  render();
+})();
+</script>
+</body>
+</html>
